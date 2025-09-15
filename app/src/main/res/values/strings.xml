@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Pierwsza wersja apki</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="edukacja">Edukacja</string>
+    <string name="post_p">Postęp</string>
+    <string name="dziennik">Dziennik</string>
+    <string name="przepisy">Przepisy</string>
+    <string name="wiecej">więcej</string>
+</resources>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/dziennik"
+        android:icon="@drawable/ic_dziennik"
+        android:id="@+id/dziennik"/>
+    <item android:title="@string/post_p"
+        android:icon="@drawable/ic_postep"
+        android:id="@+id/postep"/>
+    <item android:title="@string/edukacja"
+        android:icon="@drawable/ic_edukacja"
+        android:id="@+id/edukacja"/>
+    <item android:title="@string/przepisy"
+        android:icon="@drawable/ic_przepisy"
+        android:id="@+id/przepisy"/>
+    <item android:title="@string/wiecej"
+        android:icon="@drawable/ic_wiecej"
+        android:id="@+id/wiecej"/>
+
+</menu>
