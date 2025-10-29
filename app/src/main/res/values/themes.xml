@@ -3,7 +3,14 @@
     <style name="Base.Theme.PierwszaWersjaApki" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item> <!-- ikony będą białe -->
     </style>
 
     <style name="Theme.PierwszaWersjaApki" parent="Base.Theme.PierwszaWersjaApki" />
+
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">@android:color/white</item>
+    </style>
 </resources>

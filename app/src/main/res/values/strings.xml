@@ -1,10 +1,48 @@
 <resources>
-    <string name="app_name">Pierwsza wersja apki</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">ZjedzTo</string>
     <string name="edukacja">Edukacja</string>
     <string name="post_p">Postęp</string>
     <string name="dziennik">Dziennik</string>
     <string name="przepisy">Przepisy</string>
     <string name="wiecej">więcej</string>
+    <string name="api_key">a9117a8442c2404a8b3939cfa904fd15</string>
+    <string name="gemini_key">AIzaSyC1su4bq1zcc5_ZtmJiMdTXZeyR4C_S4qQ</string>
+    <string name="chatbot_powitanie">Jestem Twoim asystentem od zdrowego jedzenia. Podpowiem Ci, jak komponować posiłki, wybierać składniki i znajdować inspirujące przepisy. \nOd czego zaczynamy?</string>
+
+    <string-array name="tags_display">
+        <item>Dania główne</item>
+        <item>Dodatek</item>
+        <item>Deser</item>
+        <item>Przystawka</item>
+        <item>Sałatka</item>
+        <item>Pieczywo</item>
+        <item>Śniadanie</item>
+        <item>Zupa</item>
+        <item>Napój</item>
+        <item>Sos</item>
+        <item>Marynata</item>
+        <item>Do jedzenia palcami</item>
+        <item>Przekąska</item>
+        <item>Napój</item>
+    </string-array>
+
+    <string-array name="tags">
+        <item>main course</item>
+        <item>side dish</item>
+        <item>dessert</item>
+        <item>appetizer</item>
+        <item>salad</item>
+        <item>bread</item>
+        <item>breakfast</item>
+        <item>soup</item>
+        <item>beverage</item>
+        <item>sauce</item>
+        <item>marinade</item>
+        <item>fingerfood</item>
+        <item>snack</item>
+        <item>drink</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

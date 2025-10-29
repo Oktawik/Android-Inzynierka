@@ -2,63 +2,93 @@ package com.example.pierwszawersjaapki;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link WiecejFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.example.pierwszawersjaapki.wiecejfragment.WiecejFragmentAdapter;
+import com.example.pierwszawersjaapki.wiecejfragment.Item;
+import com.example.pierwszawersjaapki.wiecejfragment.WiecejFragmentViewHolder;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class WiecejFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    RecyclerView recyclerView;
+    List<Item> items;
 
     public WiecejFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment WiecejFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static WiecejFragment newInstance(String param1, String param2) {
-        WiecejFragment fragment = new WiecejFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_wiecej, container, false);
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        recyclerView = view.findViewById(R.id.rv_wiecej);
+        items = new ArrayList<>();
+        items.add(new Item("Lista zakupów", R.drawable.ic_launcher_background, "Twórz i zarządzaj swoimi listami zakupów. Dodawaj produkty ręcznie lub z przepisów."));
+        items.add(new Item("Nawyki", R.drawable.ic_launcher_background, "Śledź codzienne nawyki zdrowego stylu życia. Otrzymuj przypomnienia i sprawdzaj postępy."));
+        items.add(new Item("Chatbot", R.drawable.ic_launcher_background, "Porozmawiaj z naszym doradcą żywieniowym. Zadaj pytania i otrzymuj wskazówki dotyczące diety."));
+        items.add(new Item("Post Przerywany", R.drawable.ic_launcher_background, "Zarządzaj swoim postem przerywanym. Otrzymuj powiadomienia i śledź czas postu."));
+        items.add(new Item("Diety", R.drawable.ic_launcher_background, "Przeglądaj gotowe plany dietetyczne. Wybieraj te, które pasują do Twojego celu i stylu życia."));
+        items.add(new Item("Zdrowsze zamienniki", R.drawable.ic_launcher_background, "Sprawdź propozycje zdrowszych zamienników dla codziennych produktów. Ułatwia podejmowanie lepszych wyborów."));
+        items.add(new Item("Ustawienia", R.drawable.ic_launcher_background, "Dostosuj aplikację do swoich potrzeb. Zmieniaj powiadomienia, jednostki i profil użytkownika."));
+        items.add(new Item("Pomoc", R.drawable.ic_launcher_background, "Znajdź odpowiedzi na pytania i wskazówki dotyczące korzystania z aplikacji. Skontaktuj się z nami w razie problemów."));
+        items.add(new Item("Wyloguj się", R.drawable.ic_launcher_background, "Kliknij, żeby wyjść ze swojego konta. Będziesz musiał zalogować się ponownie, jeśli zechcesz wrócić."));
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        WiecejFragmentAdapter adapter = new WiecejFragmentAdapter(
+                getContext(),
+                items,
+                item -> {
+                    String nazwa = item.getName();
+
+                    if ("Chatbot".equals(nazwa)) {
+                        requireActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.frame_layout, new ChatbotFragment())
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                    if ("Pomoc".equals(nazwa)) {
+                        requireActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.frame_layout, new PomocFragment())
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                    if ("Wyloguj się".equals(nazwa)) {
+                        Toast.makeText(getContext(), "Wylogowano", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), "Kliknięto: " + nazwa, Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        recyclerView.setAdapter(adapter);
+
+    }
+
+    // 0bsluga przyciskow jest w WiecejFragmentAdapter
+
 }

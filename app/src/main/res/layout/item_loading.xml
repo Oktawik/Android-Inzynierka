@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:gravity="start"
+    android:paddingVertical="8dp">
+
+    <ProgressBar
+        android:id="@+id/loading_spinner"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:indeterminate="true"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_gravity="center_vertical"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="AI myśli..."
+        android:background="@drawable/bg_message_bot"
+        android:padding="10dp"
+        android:textColor="@color/white"
+        android:layout_gravity="center_vertical"/>
+
+</LinearLayout>
