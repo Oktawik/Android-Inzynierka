@@ -1,0 +1,172 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:layout_margin="0dp">
+
+    <!-- Górny pasek -->
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/green"
+        android:padding="10dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageButton
+            android:id="@+id/btn_zapisane_chaty"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_history"/>
+        <TextView
+            android:layout_gravity="center"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Zdrowo z AI"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+        <ImageButton
+            android:id="@+id/btn_nowy_chat"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_edit"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+
+    <!-- Widok powitalny -->
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:id="@+id/ll_chatbot_widok_powitalny"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:contentDescription="Chatbot"
+            android:src="@drawable/ic_chatbot"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:text="Hej! Miło Cię widzieć 😊"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:lineSpacingMultiplier="1.2"
+            android:text="@string/chatbot_powitanie"
+            android:textAlignment="center"
+            android:textColor="@color/gray"/>
+    </LinearLayout>
+
+    <!-- RecyclerView z czatem -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_chatbot"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingLeft="8dp"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/ll_chatbot_widok_powitalny"
+        app:layout_constraintBottom_toTopOf="@id/ll_popular_questions"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Popularne pytania przyklejone nad dolnym paskiem -->
+
+    <!-- Dolny pasek -->
+    <LinearLayout
+        android:id="@+id/ll_popular_questions"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/bg_chatbot_popular_questions"
+        android:orientation="vertical"
+        android:padding="15dp"
+        android:paddingTop="15dp"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:paddingBottom="5dp"
+        app:layout_constraintBottom_toTopOf="@id/ll_bottom_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Popularne pytania"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_chatbot_popularne_pytania"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_bottom_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:paddingBottom="15dp"
+        android:paddingRight="15dp"
+        android:paddingLeft="15dp"
+        android:paddingTop="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <EditText
+            android:id="@+id/et_message_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_chatbot_edittext"
+            android:hint="Zadaj pytanie..."
+            android:padding="15dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray"
+            android:textSize="16sp"
+            android:layout_marginRight="10dp"/>
+
+        <ImageButton
+            android:id="@+id/btn_send_message"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_chatbot_btn_send"
+            android:src="@drawable/ic_send" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

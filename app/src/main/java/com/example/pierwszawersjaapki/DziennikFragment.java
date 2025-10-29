@@ -6,80 +6,74 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 // Modele
+import com.example.pierwszawersjaapki.CaloriesJournal.CircularProgressBarView;
+import com.example.pierwszawersjaapki.CaloriesJournal.DishFragmentAdapter;
+import com.example.pierwszawersjaapki.CaloriesJournal.DishItem;
+import com.example.pierwszawersjaapki.CaloriesJournal.MacroAdapter;
+import com.example.pierwszawersjaapki.CaloriesJournal.MacroItem;
+import com.example.pierwszawersjaapki.CaloriesJournal.WaterCup;
+import com.example.pierwszawersjaapki.CaloriesJournal.WaterFragmentAdapter;
 import com.example.pierwszawersjaapki.model.DailyData;
-import com.example.pierwszawersjaapki.model.MacroNutrient;
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 
+public class DziennikFragment extends Fragment implements DishFragmentAdapter.OnCameraAddClickListener, DishFragmentAdapter.OnAddClickListener, DishFragmentAdapter.OnMealTimingClickListener {
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link DziennikFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class DziennikFragment extends Fragment {
+    // Zmienne ogolne
+    private View rootView;
+    private ImageButton btn_notifications;
 
     // Zmienne kalendarza
     private View selectedDayView = null; // przechowuje poprzednio zaznaczony dzień
 
     // Zmienne podsumowania
-    private View rootView;
-    private TextView caloriesNeeded, caloriesConsumed, caloriesBurned, netCalories;
-    private ProgressBar proteinProgress, carbsProgress, fatProgress;
-    private TextView proteinText, carbsText, fatText;
+    private CircularProgressBarView pb_calories_left;
+    private List<MacroItem> macroItemList;
+    private RecyclerView rv_macros;
 
     private DailyData currentDayData = new DailyData();
 
+    // Zmienne Odżywianie
+    private RecyclerView rv_meal_timings;
+    private List<DishItem> dishItemList;
+    int ilosc_posilkow;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    // Zmienne Woda
+    private RecyclerView rv_cups_of_water;
+    private List<WaterCup> waterCupList;
+    private int waterIntake;
+    private int waterCupsAmount;
+    private TextView tv_water_intake_current;
+    private float waterDrank;
 
     public DziennikFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DziennikFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static DziennikFragment newInstance(String param1, String param2) {
-        DziennikFragment fragment = new DziennikFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Nullable
@@ -92,8 +86,7 @@ public class DziennikFragment extends Fragment {
         LinearLayout weekDaysContainer = rootView.findViewById(R.id.weekDaysContainer);
         ImageButton calendarButton = rootView.findViewById(R.id.calendarButton);
 
-        // Inicjalizacja Podsumowania
-        initializeSummaryViews();
+        btn_notifications = rootView.findViewById(R.id.btn_notificaions);
 
         // Pobranie dzisiejszej daty
         Calendar calendar = Calendar.getInstance();
@@ -115,6 +108,11 @@ public class DziennikFragment extends Fragment {
             datePickerDialog.show();
         });
 
+        // Obsluga przycisku powiadomien
+        btn_notifications.setOnClickListener(v -> {
+
+        });
+
         return rootView;
     }
 
@@ -122,9 +120,86 @@ public class DziennikFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Startowe dane testowe
-        initializeSampleData();
-        updateDailySummary();
+        // Sekcja Podsumowanie
+        pb_calories_left = view.findViewById(R.id.pb_calories_left);
+        pb_calories_left.setMaxProgress(100);
+        pb_calories_left.setCurrentProgress(33);
+        rv_macros = view.findViewById(R.id.rv_macros);
+        macroItemList = new ArrayList<>();
+        macroItemList.add(new MacroItem("Białko", 50, 100, (int)(((float)50/100) * 100), R.color.green));
+        macroItemList.add(new MacroItem("Węglowodany", 94, 244, (int)(((float)94/244) * 100), R.color.gray));
+        macroItemList.add(new MacroItem("Tłuszcz", 10, 68, (int)(((float)10/68) * 100), R.color.gray));
+
+        MacroAdapter macroAdapter = new MacroAdapter(getContext(), macroItemList);
+        rv_macros.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        rv_macros.setAdapter(macroAdapter);
+
+        ilosc_posilkow = 0;
+
+        // Sekcja odżywianie
+        rv_meal_timings = view.findViewById(R.id.rv_meal_timings);
+        dishItemList = new ArrayList<>();
+        dishItemList.add(new DishItem(1, "Śniadanie", R.drawable.ic_chatbot, 200, 400, "Owsianka, Mleko", 400/200));
+        dishItemList.add(new DishItem(1, "Lunch", R.drawable.ic_chatbot, 100, 400, "Banan, Jogurt grecki", 400/100));
+        dishItemList.add(new DishItem(1, "Obiad", R.drawable.ic_chatbot, 150, 600, "Owsianka, Mleko", 600/150));
+        dishItemList.add(new DishItem(1, "Kolacja", R.drawable.ic_chatbot, 150, 500, "Owsianka, Mleko", 500/150));
+
+        // Ustawienie odpowiedniej wysokosci
+        ilosc_posilkow = dishItemList.size();
+        // Docelowa wysokosc
+        final float TARGET_HEIGHT_DP = ilosc_posilkow * 102f;
+
+        // 2. Pobranie współczynnika gęstości ekranu (dp)
+        final float scale = getResources().getDisplayMetrics().density;
+
+        // 3. Przeliczenie DP na piksele (px)
+        // Dodanie 0.5f służy do poprawnego zaokrąglenia
+        int targetHeightPx = (int) (TARGET_HEIGHT_DP * scale + 0.5f);
+
+        // 4. Pobranie obecnych parametrów layoutu
+        ViewGroup.LayoutParams params = rv_meal_timings.getLayoutParams();
+
+        // 5. Ustawienie nowej wysokości w PIKSELACH
+        params.height = targetHeightPx;
+
+        // 6. Zastosowanie zmienionych parametrów
+        rv_meal_timings.setLayoutParams(params);
+
+
+        rv_meal_timings.setLayoutManager(new LinearLayoutManager(getActivity()));
+        DishFragmentAdapter dishFragmentAdapter = new DishFragmentAdapter(getContext(), dishItemList, this, this, this);
+        rv_meal_timings.setAdapter(dishFragmentAdapter);
+
+
+        // Sekcja woda
+        rv_cups_of_water = view.findViewById(R.id.rv_cups_of_water);
+        waterCupList = new ArrayList<>();
+        tv_water_intake_current = view.findViewById(R.id.tv_water_intake_current);
+
+        // Pobieramy ilosc wody
+        waterIntake = 2000;
+        waterCupsAmount = 2000/200;
+        waterDrank = 0;
+
+        // Dodajemy ilosc szklanek wody
+        for (int i=0; i<waterCupsAmount; i++) {
+            waterCupList.add(new WaterCup(i, R.drawable.glass_empty, false));
+        }
+
+        FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(getContext());
+        flexboxLayoutManager.setFlexDirection(FlexDirection.ROW);
+        flexboxLayoutManager.setFlexWrap(FlexWrap.WRAP);
+        flexboxLayoutManager.setJustifyContent(JustifyContent.CENTER);
+        rv_cups_of_water.setLayoutManager(flexboxLayoutManager);
+        WaterFragmentAdapter waterFragmentAdapter = new WaterFragmentAdapter(
+                getContext(),
+                waterCupList,
+                change -> {
+                    waterDrank+=change;
+                    tv_water_intake_current.setText(String.format("%.2f l", waterDrank/1000));
+                }
+        );
+        rv_cups_of_water.setAdapter(waterFragmentAdapter);
     }
 
     // METODY KALENDARZA
@@ -153,7 +228,7 @@ public class DziennikFragment extends Fragment {
             // Listener kliknięcia
             dayView.setOnClickListener(v -> {
                 if (selectedDayView != null) {
-                    selectedDayView.setBackgroundColor(Color.WHITE);
+                    selectedDayView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.light_gray));
                     TextView prevName = selectedDayView.findViewById(R.id.dayName);
                     TextView prevNumber = selectedDayView.findViewById(R.id.dayNumber);
                     prevName.setTextColor(Color.BLACK);
@@ -182,80 +257,22 @@ public class DziennikFragment extends Fragment {
         }
     }
 
-    // METODY PODSUMOWANIA
-    // Aktualizacja całego podsumowania
-    private void updateDailySummary() {
-        updateCalories();
-        updateMacronutrients();
+    @Override
+    public void onAddClickListener(DishItem dishItem) {
+
     }
 
-    // Aktualizacja kalorii
-    private void updateCalories() {
-        caloriesNeeded.setText(String.valueOf(currentDayData.caloriesNeeded));
-        caloriesConsumed.setText(String.valueOf(currentDayData.caloriesConsumed));
-        caloriesBurned.setText(String.valueOf(currentDayData.caloriesBurned));
-
-        int netCals = currentDayData.caloriesNeeded - currentDayData.caloriesConsumed + currentDayData.caloriesBurned;
-        netCalories.setText(String.valueOf(netCals));
+    @Override
+    public void onCameraAddClick(DishItem dishItem) {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                        .replace(R.id.frame_layout, new AparatFragment())
+                        .addToBackStack(null)
+                        .commit();
     }
 
-    // Aktualizacja makroskładników
-    private void updateMacronutrients() {
-        updateMacro(proteinProgress, proteinText, currentDayData.protein);
-        updateMacro(carbsProgress, carbsText, currentDayData.carbs);
-        updateMacro(fatProgress, fatText, currentDayData.fat);
+    @Override
+    public void onMealTimingCliked(DishItem dishItem) {
+        Toast.makeText(getContext(), dishItem.getNazwa(), Toast.LENGTH_SHORT).show();
     }
-
-    private void updateMacro(ProgressBar progressBar, TextView textView, MacroNutrient macro) {
-        int progress = (int) ((macro.consumed / (double) macro.target) * 100);
-        progressBar.setProgress(Math.min(progress, 100));
-        textView.setText(macro.consumed + "g / " + macro.target + "g");
-    }
-
-    private void initializeSummaryViews() {
-        caloriesNeeded = rootView.findViewById(R.id.caloriesNeeded);
-        caloriesConsumed = rootView.findViewById(R.id.caloriesConsumed);
-        caloriesBurned = rootView.findViewById(R.id.caloriesBurned);
-        netCalories = rootView.findViewById(R.id.netCalories);
-
-        proteinProgress = rootView.findViewById(R.id.proteinProgress);
-        carbsProgress = rootView.findViewById(R.id.carbsProgress);
-        fatProgress = rootView.findViewById(R.id.fatProgress);
-        proteinText = rootView.findViewById(R.id.proteinText);
-        carbsText = rootView.findViewById(R.id.carbsText);
-        fatText = rootView.findViewById(R.id.fatText);
-    }
-
-    // Dodaj spożyte kalorie
-    public void addCalories(int calories, int protein, int carbs, int fat) {
-        currentDayData.caloriesConsumed += calories;
-        currentDayData.protein.consumed += protein;
-        currentDayData.carbs.consumed += carbs;
-        currentDayData.fat.consumed += fat;
-        updateDailySummary();
-    }
-
-    // Dodaj spalone kalorie
-    public void addBurnedCalories(int calories) {
-        currentDayData.caloriesBurned += calories;
-        updateDailySummary();
-    }
-
-    // Ustaw cele na dany dzień
-    public void setDailyTargets(int calorieTarget, int proteinTarget, int carbsTarget, int fatTarget) {
-        currentDayData.caloriesNeeded = calorieTarget;
-        currentDayData.protein.target = proteinTarget;
-        currentDayData.carbs.target = carbsTarget;
-        currentDayData.fat.target = fatTarget;
-        updateDailySummary();
-    }
-
-    private void initializeSampleData() {
-        currentDayData.caloriesConsumed = 1200;
-        currentDayData.caloriesBurned = 300;
-        currentDayData.protein.consumed = 45;
-        currentDayData.carbs.consumed = 180;
-        currentDayData.fat.consumed = 40;
-    }
-
 }

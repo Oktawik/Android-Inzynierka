@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "293632917971",
+    "project_id": "signup-login-firebase-85a28",
+    "storage_bucket": "signup-login-firebase-85a28.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:293632917971:android:2699198d39ff298e526f26",
+        "android_client_info": {
+          "package_name": "com.example.pierwszawersjaapki"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-yopL9enKe1mVyJAyf5ozug_y0lmSm0E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

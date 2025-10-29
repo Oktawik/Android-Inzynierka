@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@android:color/transparent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@drawable/bg_chatbot_edittext"
+        android:layout_marginTop="15dp">
+
+        <TextView
+            android:id="@+id/tv_group"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="Kidamogus"/>
+
+        <ImageView
+            android:id="@+id/iv_arrow"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_arrow_down"
+            android:contentDescription="Rozwiń pytanie"
+            android:rotation="0"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
+    </LinearLayout>
+
+</LinearLayout>

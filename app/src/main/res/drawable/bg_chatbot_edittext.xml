@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#E0E0E0"/> <!-- kolor tła bąbelka -->
+    <corners android:radius="30dp"/> <!-- promień zaokrąglenia -->
+</shape>
