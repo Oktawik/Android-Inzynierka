@@ -32,8 +32,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <include android:id="@+id/ll_dziennik_podsumowanie_dzien" layout="@layout/dziennik_podsumowanie_dzien"/>
+    <include android:id="@+id/ll_dziennik_podsumowanie_dzien" layout="@layout/dziennik_podsumowanie_dzien" android:visibility="gone"/>
     <include android:id="@+id/ll_dziennik_podsumowanie_tydzien" layout="@layout/dziennik_podsumowanie_tydzien" android:visibility="gone"/>
-    <include android:id="@+id/ll_dziennik_podsumowanie_miesiac" layout="@layout/dziennik_podsumowanie_miesiac" android:visibility="gone"/>
+    <include android:id="@+id/ll_dziennik_podsumowanie_miesiac" layout="@layout/dziennik_podsumowanie_miesiac"/>
+
+    <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/rv_dziennik_podsumowanie_wartosci_odzywcze"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>

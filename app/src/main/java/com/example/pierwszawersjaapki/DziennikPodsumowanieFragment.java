@@ -11,9 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.pierwszawersjaapki.CaloriesJournal.Summary.CzasAdapter;
 import com.example.pierwszawersjaapki.CaloriesJournal.Summary.CzasItem;
+import com.example.pierwszawersjaapki.CaloriesJournal.Summary.WartoscOdzywczaAdapter;
+import com.example.pierwszawersjaapki.CaloriesJournal.Summary.WartoscOdzywczaItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,8 @@ public class DziennikPodsumowanieFragment extends Fragment implements CzasAdapte
     private LinearLayout ll_dziennik_podsumowanie_dzien;
     private LinearLayout ll_dziennik_podsumowanie_tydzien;
     private LinearLayout ll_dziennik_podsumowanie_miesiac;
+    private RecyclerView rv_dziennik_podsumowanie_wartosci_odzywcze;
+    private List<WartoscOdzywczaItem> wartoscOdzywczaList;
 
     public DziennikPodsumowanieFragment() {
         // Required empty public constructor
@@ -54,6 +59,18 @@ public class DziennikPodsumowanieFragment extends Fragment implements CzasAdapte
         ll_dziennik_podsumowanie_dzien = view.findViewById(R.id.ll_dziennik_podsumowanie_dzien);
         ll_dziennik_podsumowanie_tydzien = view.findViewById(R.id.ll_dziennik_podsumowanie_tydzien);
         ll_dziennik_podsumowanie_miesiac = view.findViewById(R.id.ll_dziennik_podsumowanie_miesiac);
+
+        rv_dziennik_podsumowanie_wartosci_odzywcze = view.findViewById(R.id.rv_dziennik_podsumowanie_wartosci_odzywcze);
+        if (rv_dziennik_podsumowanie_wartosci_odzywcze == null) {
+            Toast.makeText(getContext(),"Pusty",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(),"Znaleziono",Toast.LENGTH_SHORT).show();
+        }
+        wartoscOdzywczaList = new ArrayList<>();
+        wartoscOdzywczaList.add(new WartoscOdzywczaItem(1, "Białka", 170, 2000, 50, "Wartości odżywcze", " (g) "));
+        rv_dziennik_podsumowanie_wartosci_odzywcze.setLayoutManager(new LinearLayoutManager(getContext()));
+        WartoscOdzywczaAdapter wartoscOdzywczaAdapter = new WartoscOdzywczaAdapter(getContext(),wartoscOdzywczaList);
+        rv_dziennik_podsumowanie_wartosci_odzywcze.setAdapter(wartoscOdzywczaAdapter);
 
         return view;
     }
