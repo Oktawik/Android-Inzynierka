@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DziennikPodsumowanieFragment"
+    android:orientation="vertical">
+
+    <!-- Górny pasek -->
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/green"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_gravity="center"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Podsumowanie"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_podsumowanie_czas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <include android:id="@+id/ll_dziennik_podsumowanie_dzien" layout="@layout/dziennik_podsumowanie_dzien"/>
+    <include android:id="@+id/ll_dziennik_podsumowanie_tydzien" layout="@layout/dziennik_podsumowanie_tydzien" android:visibility="gone"/>
+    <include android:id="@+id/ll_dziennik_podsumowanie_miesiac" layout="@layout/dziennik_podsumowanie_miesiac" android:visibility="gone"/>
+
+</LinearLayout>

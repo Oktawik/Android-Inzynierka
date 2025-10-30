@@ -51,6 +51,7 @@ public class DziennikFragment extends Fragment implements DishFragmentAdapter.On
     private CircularProgressBarView pb_calories_left;
     private List<MacroItem> macroItemList;
     private RecyclerView rv_macros;
+    private LinearLayout ll_calories_summary;
 
     private DailyData currentDayData = new DailyData();
 
@@ -133,6 +134,16 @@ public class DziennikFragment extends Fragment implements DishFragmentAdapter.On
         MacroAdapter macroAdapter = new MacroAdapter(getContext(), macroItemList);
         rv_macros.setLayoutManager(new GridLayoutManager(getContext(), 3));
         rv_macros.setAdapter(macroAdapter);
+
+        ll_calories_summary = view.findViewById(R.id.ll_calories_summary);
+
+        ll_calories_summary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                OnCaloriesSummaryClick();
+            }
+        });
+
 
         ilosc_posilkow = 0;
 
@@ -255,6 +266,15 @@ public class DziennikFragment extends Fragment implements DishFragmentAdapter.On
             weekDaysContainer.addView(dayView);
             calendar.add(Calendar.DAY_OF_MONTH, 1); // przechodzimy do następnego dnia
         }
+    }
+
+    // tu będę musiał przekazywać dzisiejszą datę
+    private void OnCaloriesSummaryClick() {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame_layout, new DziennikPodsumowanieFragment())
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
