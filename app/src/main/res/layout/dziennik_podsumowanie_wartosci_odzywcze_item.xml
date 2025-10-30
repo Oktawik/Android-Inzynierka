@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/light_gray"
+    android:elevation="8dp">
+
+    <TextView
+        android:id="@+id/tv_wartosc_odzywcza_rodzaj"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Witaminki witaminki"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:paddingTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="0dp"
+        android:textSize="16sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_wartosc_odzywcza_nazwa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jedzenie"
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/tv_wartosc_odzywcza_jednostka"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" (kcal)"
+            android:textStyle="bold"
+            android:paddingTop="10dp"
+            android:paddingBottom="0dp"
+            android:paddingRight="10dp"
+            android:textSize="13sp"
+            android:textColor="@color/black" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:paddingBottom="0dp">
+
+            <TextView
+                android:id="@+id/tv_wartosc_odzywcza_ilosc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="170"
+                android:textSize="13sp"
+                android:paddingRight="60dp"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:id="@+id/tv_wartosc_odzywcza_cel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2000"
+                android:textSize="13sp"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+    </LinearLayout>
+    <ProgressBar
+        android:id="@+id/pb_wartosc_odzywcza_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"/>
+</LinearLayout>
