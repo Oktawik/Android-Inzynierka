@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.example.pierwszawersjaapki.CaloriesJournal.Summary.CzasAdapter;
 import com.example.pierwszawersjaapki.CaloriesJournal.Summary.CzasItem;
+import com.example.pierwszawersjaapki.CaloriesJournal.Summary.SekcjaWartosciOdzywcze;
+import com.example.pierwszawersjaapki.CaloriesJournal.Summary.SekcjaWartosciOdzywczeAdapter;
 import com.example.pierwszawersjaapki.CaloriesJournal.Summary.WartoscOdzywczaAdapter;
 import com.example.pierwszawersjaapki.CaloriesJournal.Summary.WartoscOdzywczaItem;
 
@@ -29,6 +31,7 @@ public class DziennikPodsumowanieFragment extends Fragment implements CzasAdapte
     private LinearLayout ll_dziennik_podsumowanie_tydzien;
     private LinearLayout ll_dziennik_podsumowanie_miesiac;
     private RecyclerView rv_dziennik_podsumowanie_wartosci_odzywcze;
+    private List<SekcjaWartosciOdzywcze> sekcjaWartosciOdzywcze;
     private List<WartoscOdzywczaItem> wartoscOdzywczaList;
 
     public DziennikPodsumowanieFragment() {
@@ -67,10 +70,14 @@ public class DziennikPodsumowanieFragment extends Fragment implements CzasAdapte
             Toast.makeText(getContext(),"Znaleziono",Toast.LENGTH_SHORT).show();
         }
         wartoscOdzywczaList = new ArrayList<>();
-        wartoscOdzywczaList.add(new WartoscOdzywczaItem(1, "Białka", 170, 2000, 50, "Wartości odżywcze", " (g) "));
+        sekcjaSpozycieWartosciOdzywczych();
+        sekcjaWartosciOdzywcze = new ArrayList<>();
+        sekcjaWartosciOdzywcze.add(new SekcjaWartosciOdzywcze("Wartości odżywcze", wartoscOdzywczaList));
+
         rv_dziennik_podsumowanie_wartosci_odzywcze.setLayoutManager(new LinearLayoutManager(getContext()));
-        WartoscOdzywczaAdapter wartoscOdzywczaAdapter = new WartoscOdzywczaAdapter(getContext(),wartoscOdzywczaList);
-        rv_dziennik_podsumowanie_wartosci_odzywcze.setAdapter(wartoscOdzywczaAdapter);
+
+        SekcjaWartosciOdzywczeAdapter sekcjaWartosciOdzywczeAdapter = new SekcjaWartosciOdzywczeAdapter(getContext(), sekcjaWartosciOdzywcze);
+        rv_dziennik_podsumowanie_wartosci_odzywcze.setAdapter(sekcjaWartosciOdzywczeAdapter);
 
         return view;
     }
@@ -96,5 +103,8 @@ public class DziennikPodsumowanieFragment extends Fragment implements CzasAdapte
             ll_dziennik_podsumowanie_tydzien.setVisibility(View.GONE);
             ll_dziennik_podsumowanie_miesiac.setVisibility(View.VISIBLE);
         }
+    }
+    void sekcjaSpozycieWartosciOdzywczych() {
+        wartoscOdzywczaList.add(new WartoscOdzywczaItem(2, "Białka", 170, 2000, 50, "Wartości odżywcze", " (g) "));
     }
 }

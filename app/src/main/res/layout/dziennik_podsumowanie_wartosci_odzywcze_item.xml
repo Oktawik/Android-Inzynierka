@@ -3,21 +3,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/light_gray"
+    android:background="@drawable/rounded_bg"
     android:elevation="8dp">
-
-    <TextView
-        android:id="@+id/tv_wartosc_odzywcza_rodzaj"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Witaminki witaminki"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:paddingTop="10dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="0dp"
-        android:textSize="16sp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -63,10 +50,10 @@
                 android:id="@+id/tv_wartosc_odzywcza_ilosc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="170"
-                android:textSize="13sp"
                 android:paddingRight="60dp"
-                android:textColor="@color/black"/>
+                android:text="170"
+                android:textColor="@color/black"
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/tv_wartosc_odzywcza_cel"

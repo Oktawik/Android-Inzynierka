@@ -31,7 +31,6 @@ public class WartoscOdzywczaAdapter extends RecyclerView.Adapter<WartoscOdzywcza
 
     @Override
     public void onBindViewHolder(@NonNull WartoscOdzywczaViewHolder holder, int position) {
-        holder.tv_wartosc_odzywcza_rodzaj.setText(list.get(position).getRodzaj());
         holder.tv_wartosc_odzywcza_nazwa.setText(list.get(position).getNazwa());
         holder.tv_wartosc_odzywcza_jednostka.setText(list.get(position).getJednostka());
         holder.tv_wartosc_odzywcza_ilosc.setText(String.valueOf(list.get(position).getIlosc()));
@@ -47,7 +46,6 @@ public class WartoscOdzywczaAdapter extends RecyclerView.Adapter<WartoscOdzywcza
 
 class WartoscOdzywczaViewHolder extends RecyclerView.ViewHolder {
 
-    TextView tv_wartosc_odzywcza_rodzaj;
     TextView tv_wartosc_odzywcza_nazwa;
     TextView tv_wartosc_odzywcza_jednostka;
     TextView tv_wartosc_odzywcza_ilosc;
@@ -57,7 +55,6 @@ class WartoscOdzywczaViewHolder extends RecyclerView.ViewHolder {
     public WartoscOdzywczaViewHolder(@NonNull View itemView) {
         super(itemView);
 
-        tv_wartosc_odzywcza_rodzaj = itemView.findViewById(R.id.tv_wartosc_odzywcza_rodzaj);
         tv_wartosc_odzywcza_nazwa = itemView.findViewById(R.id.tv_wartosc_odzywcza_nazwa);
         tv_wartosc_odzywcza_jednostka = itemView.findViewById(R.id.tv_wartosc_odzywcza_jednostka);
         tv_wartosc_odzywcza_ilosc = itemView.findViewById(R.id.tv_wartosc_odzywcza_ilosc);
