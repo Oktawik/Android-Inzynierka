@@ -7,6 +7,7 @@
     <string name="wiecej">więcej</string>
     <string name="api_key">a9117a8442c2404a8b3939cfa904fd15</string>
     <string name="gemini_key">AIzaSyC1su4bq1zcc5_ZtmJiMdTXZeyR4C_S4qQ</string>
+    <string name="food_data_central_key">qLG09Z9Yl1BIU0vhQ5hxza8JwO6d24EVP1s1rWjz</string>
     <string name="chatbot_powitanie">Jestem Twoim asystentem od zdrowego jedzenia. Podpowiem Ci, jak komponować posiłki, wybierać składniki i znajdować inspirujące przepisy. \nOd czego zaczynamy?</string>
 
     <string-array name="tags_display">
