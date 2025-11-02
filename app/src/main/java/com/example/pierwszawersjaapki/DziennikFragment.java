@@ -279,7 +279,16 @@ public class DziennikFragment extends Fragment implements DishFragmentAdapter.On
 
     @Override
     public void onAddClickListener(DishItem dishItem) {
+        DziennikDodaj fragment = new DziennikDodaj();
+        Bundle args = new Bundle();
+        args.putString("meal_name",dishItem.getNazwa());
+        fragment.setArguments(args);
 
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame_layout, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
