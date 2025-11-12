@@ -6,52 +6,79 @@
     tools:context=".DziennikDodaj"
     android:orientation="vertical">
 
-    <!-- Górny pasek -->
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:background="@color/green"
-        android:padding="20dp"
+        android:padding="10dp"
         android:layout_marginBottom="10dp">
+
+        <ImageButton
+            android:id="@+id/btn_cofnij"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/tv_pora_posilku"
+            android:layout_alignBottom="@id/tv_data"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Cofnij"
+            android:paddingLeft="10dp"
+            android:src="@drawable/ic_arrow_back"
+            android:tint="@color/white" />
 
         <TextView
             android:id="@+id/tv_pora_posilku"
-            android:layout_gravity="center"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
             android:text="Pora posiłku"
             android:textColor="@color/white"
             android:textSize="22sp"
-            android:textStyle="bold"
-            android:gravity="center"/>
+            android:textStyle="bold" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/tv_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_pora_posilku"
+            android:layout_centerHorizontal="true"
+            android:text="Data"
+            android:textAlignment="center"
+            android:textStyle="normal"
+            android:textColor="@color/white"
+            android:textSize="17sp" />
+
+    </RelativeLayout>
 
     <SearchView
-        android:background="@drawable/rounded_bg"
+        android:background="@drawable/chatbot_popular_question"
         android:id="@+id/sv_dziennik_dodaj"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:queryHint="Dodaj produkt..."
+        android:queryHint="Wyszukaj produkt..."
         android:padding="10dp"
         android:layout_marginBottom="10dp"
         android:iconifiedByDefault="false"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         />
 
     <TextView
-        android:background="@drawable/rounded_bg"
+        android:background="@drawable/chatbot_popular_question"
         android:id="@+id/tv_dziennik_dodaj"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Produkty test..."
-        android:padding="10dp"
+        android:padding="12dp"
         android:textSize="16sp"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
         android:padding="10dp"
         android:background="@drawable/rounded_bg"
         android:id="@+id/rv_dziennik_dodaj"

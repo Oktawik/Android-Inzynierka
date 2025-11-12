@@ -1,79 +1,47 @@
-package com.example.pierwszawersjaapki.CaloriesJournal.Add;
+package com.example.pierwszawersjaapki.CaloriesJournal.Add; // Użyj swojego pakietu
 
 public class ProduktItem {
-    int id;
+    long id; // Zmienione na long
     String nazwa;
-    // int ilosc_gramow; // domyslnie jest 100g
     int ilosc_kalorii;
     int bialko;
     int weglowodany;
     int tluszcze;
-    int jedna_porcja;
-    // String jednostka; // np. ml, gramy
+    int jedna_porcja; // Możesz to usunąć, jeśli nie używasz
 
-    public ProduktItem(int id, String nazwa, int ilosc_kalorii, int bialko, int weglowodany, int tluszcze, int jedna_porcja) {
+    // ⭐ NOWE POLA (do przekazania dalej)
+    private String householdServing; // "0.25 cup"
+    private double servingSize; // 41.0
+    private String servingSizeUnit; // "g"
+    private String packageWeight; // "1.64 kg"
+
+    // ⭐ ZAKTUALIZOWANY KONSTRUKTOR
+    public ProduktItem(long id, String nazwa, int ilosc_kalorii, int bialko, int weglowodany, int tluszcze,
+                       String householdServing, double servingSize, String servingSizeUnit, String packageWeight) {
         this.id = id;
         this.nazwa = nazwa;
         this.ilosc_kalorii = ilosc_kalorii;
         this.bialko = bialko;
         this.weglowodany = weglowodany;
         this.tluszcze = tluszcze;
-        this.jedna_porcja = jedna_porcja;
+
+        this.householdServing = householdServing;
+        this.servingSize = servingSize;
+        this.servingSizeUnit = servingSizeUnit;
+        this.packageWeight = packageWeight;
     }
 
-    public int getId() {
-        return id;
-    }
+    // --- Gettery ---
+    public long getId() { return id; }
+    public String getNazwa() { return nazwa; }
+    public int getIlosc_kalorii() { return ilosc_kalorii; }
+    public int getBialko() { return bialko; }
+    public int getWeglowodany() { return weglowodany; }
+    public int getTluszcze() { return tluszcze; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getNazwa() {
-        return nazwa;
-    }
-
-    public void setNazwa(String nazwa) {
-        this.nazwa = nazwa;
-    }
-
-    public int getIlosc_kalorii() {
-        return ilosc_kalorii;
-    }
-
-    public void setIlosc_kalorii(int ilosc_kalorii) {
-        this.ilosc_kalorii = ilosc_kalorii;
-    }
-
-    public int getBialko() {
-        return bialko;
-    }
-
-    public void setBialko(int bialko) {
-        this.bialko = bialko;
-    }
-
-    public int getWeglowodany() {
-        return weglowodany;
-    }
-
-    public void setWeglowodany(int weglowodany) {
-        this.weglowodany = weglowodany;
-    }
-
-    public int getTluszcze() {
-        return tluszcze;
-    }
-
-    public void setTluszcze(int tluszcze) {
-        this.tluszcze = tluszcze;
-    }
-
-    public int getJedna_porcja() {
-        return jedna_porcja;
-    }
-
-    public void setJedna_porcja(int jedna_porcja) {
-        this.jedna_porcja = jedna_porcja;
-    }
+    // ⭐ NOWE GETTERY
+    public String getHouseholdServing() { return householdServing; }
+    public double getServingSize() { return servingSize; }
+    public String getServingSizeUnit() { return servingSizeUnit; }
+    public String getPackageWeight() { return packageWeight; }
 }
