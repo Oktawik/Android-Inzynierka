@@ -15,8 +15,6 @@ public class FoodMapper {
         int bialko = (int) findNutrientValue(nutrients, "Protein");
         int tluszcze = (int) findNutrientValue(nutrients, "Total lipid (fat)");
         int weglowodany = (int) findNutrientValue(nutrients, "Carbohydrate, by difference");
-
-        // ⭐ POBIERZ NOWE DANE Z OBIEKTU 'food'
         String householdServing = food.getHouseholdServingFullText();
         double servingSize = food.getServingSize();
         String servingSizeUnit = food.getServingSizeUnit();
@@ -24,27 +22,35 @@ public class FoodMapper {
 
         // ⭐ PRZEKAŻ DANE DO NOWEGO KONSTRUKTORA
         return new ProduktItem(
-                food.getFdcId(), // Zmienione na long
+                food.getFdcId(),
                 food.getDescription(),
                 kalorie,
                 bialko,
                 weglowodany,
                 tluszcze,
-                householdServing, // Nowe
-                servingSize,      // Nowe
-                servingSizeUnit,  // Nowe
-                packageWeight     // Nowe
+                householdServing,
+                servingSize,
+                servingSizeUnit,
+                packageWeight,
+                nutrients
         );
     }
 
     private static double findNutrientValue(List<FoodNutrient> nutrients, String nutrientName) {
         if (nutrients == null) return 0;
+
+        double value = 0;
+        double kjValue = 0;
+
         for (FoodNutrient nutrient : nutrients) {
             if (nutrient.getNutrientName() != null) {
                 if (nutrient.getNutrientName().equalsIgnoreCase(nutrientName)) {
                     return nutrient.getValue();
                 }
                 if (nutrientName.equals("Energy") && nutrient.getNutrientName().equalsIgnoreCase("Energy") && "KCAL".equalsIgnoreCase(nutrient.getUnitName())) {
+                    return nutrient.getValue();
+                }
+                else if (nutrient.getNutrientName().equalsIgnoreCase(nutrientName)) {
                     return nutrient.getValue();
                 }
             }

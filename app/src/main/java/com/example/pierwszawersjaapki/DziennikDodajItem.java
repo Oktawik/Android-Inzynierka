@@ -17,9 +17,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.pierwszawersjaapki.CaloriesJournal.Add.ProduktItem;
 import com.example.pierwszawersjaapki.FDC_API.FoodDataService;
 import com.example.pierwszawersjaapki.FDC_API.FoodDetailsResponse;
 import com.example.pierwszawersjaapki.FDC_API.FoodMeasure;
+import com.example.pierwszawersjaapki.FDC_API.FoodNutrient;
 import com.example.pierwszawersjaapki.FDC_API.FoodNutrientDetail;
 import com.example.pierwszawersjaapki.FDC_API.Nutrient;
 import com.example.pierwszawersjaapki.FDC_API.RetrofitClient;
@@ -37,42 +39,37 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DziennikDodajItem extends Fragment {
-
-    // --- Komponenty ---
     private TextView tv_pora_posilku_item, tv_data_item, tv_item_nazwa, tv_item_custom_kcal;
     private ImageButton btn_cofnij_item, btn_item_custom;
     private EditText et_item_custom_ilosc;
     private Spinner sp_item_custom_miara;
 
-    // --- Dane z Bundle ---
-    private long fdcId;
-    private String mealName, selectedDate, api_key;
-    private String householdServing, servingSizeUnit, packageWeightStr;
-    private double servingSize;
-
-    // --- Dane z API ---
-    private List<FoodMeasure> listaMiar = new ArrayList<>();
+    // Dane z Bundle
+    private String mealName;
+    private String selectedDate;
+    private ProduktItem produkt;
+    private List<FoodNutrient> listaSkladnikow;
     private double caloriesPer100g = 0;
+    private List<FoodMeasure> listaMiar = new ArrayList<>();
 
-    private int caloriesFromSearch = 0;
 
-    public DziennikDodajItem() {}
+    public DziennikDodajItem() {
+
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            fdcId = getArguments().getLong("fdcId");
+        if (getArguments()!=null) {
             mealName = getArguments().getString("mealName");
             selectedDate = getArguments().getString("selectedDate");
-            householdServing = getArguments().getString("householdServing");
-            servingSize = getArguments().getDouble("servingSize");
-            servingSizeUnit = getArguments().getString("servingSizeUnit");
-            packageWeightStr = getArguments().getString("packageWeight");
-            caloriesFromSearch = getArguments().getInt("calories");
+            produkt = (ProduktItem) getArguments().getSerializable("produkt");
+
+            if (produkt!=null) {
+                listaSkladnikow = produkt.getFoodNutrients();
+                caloriesPer100g = produkt.getIlosc_kalorii();
+            }
         }
-        api_key = getString(R.string.food_data_central_key);
-        Log.d("DEBUG_API", "Odebrano w onCreate fdcId: " + fdcId);
     }
 
     @Override
@@ -81,8 +78,68 @@ public class DziennikDodajItem extends Fragment {
         View view = inflater.inflate(R.layout.fragment_dziennik_dodaj_item, container, false);
         initializeComponents(view);
         setComponentsValues();
-        fetchProductDetails(fdcId);
+
+        populateViewWithData();
         return view;
+    }
+
+    private void populateViewWithData() {
+        if (produkt == null) {
+            tv_item_nazwa.setText("Błąd ładowania produktu");
+            return;
+        }
+
+        tv_item_nazwa.setText(produkt.getNazwa());
+        listaMiar.clear();
+
+        String householdServing = produkt.getHouseholdServing();
+        double servingSize = produkt.getServingSize();
+        String servingSizeUnit = produkt.getServingSizeUnit();
+        String packageWeightStr = produkt.getPackageWeight();
+
+        Log.d("DEBUG_API", "--- Analiza 'servingSize' (z Bundle) ---");
+        Log.d("DEBUG_API", "householdServing: '" + householdServing + "'");
+        Log.d("DEBUG_API", "servingSize: " + servingSize);
+        Log.d("DEBUG_API", "servingSizeUnit: '" + servingSizeUnit + "'");
+
+        if (householdServing != null && !householdServing.isEmpty() &&
+                servingSize > 0 &&
+                ("g".equalsIgnoreCase(servingSizeUnit) || "GRM".equalsIgnoreCase(servingSizeUnit))) {
+
+            Log.d("DEBUG_API", "-> SUKCES: Tworzę miarę z 'servingSize'.");
+            listaMiar.add(new FoodMeasure(householdServing, servingSize));
+        } else {
+            Log.d("DEBUG_API", "-> INFO: Brak miary 'servingSize'.");
+        }
+
+        Log.d("DEBUG_API", "--- Analiza 'packageWeight' (z Bundle) ---");
+        Log.d("DEBUG_API", "packageWeight: '" + packageWeightStr + "'");
+        double packageGrams = parsePackageWeightToGrams(packageWeightStr);
+
+        if (packageGrams > 0) {
+            Log.d("DEBUG_API", "-> SUKCES: Sparsowano 'packageWeight' na: " + packageGrams + "g");
+            FoodMeasure packageMeasure = new FoodMeasure("1 opakowanie", packageGrams);
+
+            boolean isDuplicate = false;
+            for(FoodMeasure m : listaMiar) {
+                if(m.getGramWeight() == packageGrams) { isDuplicate = true; break; }
+            }
+            if(!isDuplicate) {
+                listaMiar.add(packageMeasure);
+            } else {
+                Log.d("DEBUG_API", "-> INFO: Miara 'packageWeight' jest duplikatem, pomijam.");
+            }
+        } else {
+            Log.d("DEBUG_API", "-> INFO: Brak miary 'packageWeight'.");
+        }
+
+        Log.d("DEBUG_API", "Łącznie dodano miar do listy: " + listaMiar.size());
+        updateSpinner();
+        updateKcalDisplay();
+
+        // TUTAJ MOŻESZ WYŚWIETLIĆ MIKROSKŁADNIKI
+        // Masz teraz pełną listę `listaSkladnikow`
+        // Możesz ją przekazać do nowego RecyclerView lub wyświetlić w TextView
     }
 
     private void setComponentsValues() {
@@ -102,81 +159,6 @@ public class DziennikDodajItem extends Fragment {
             @Override public void onNothingSelected(AdapterView<?> p) {}
         });
     }
-
-    private void fetchProductDetails(long fdcId) {
-        Log.d("DEBUG_API", "fetchProductDetails: Wysyłam zapytanie dla fdcId: " + fdcId);
-        tv_item_nazwa.setText("Ładowanie danych...");
-
-        FoodDataService service = RetrofitClient.getClient().create(FoodDataService.class);
-        Call<FoodDetailsResponse> call = service.getFoodDetails(fdcId, api_key, "abridged");
-
-        call.enqueue(new Callback<FoodDetailsResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<FoodDetailsResponse> call, @NonNull Response<FoodDetailsResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    FoodDetailsResponse details = response.body();
-
-                    tv_item_nazwa.setText(details.getDescription());
-                    Log.d("DEBUG_API", "Sukces! Pobrano: " + details.getDescription());
-
-                    caloriesPer100g = caloriesFromSearch;
-                    listaMiar.clear();
-
-                    Log.d("DEBUG_API", "--- Analiza 'servingSize' (z Bundle) ---");
-                    Log.d("DEBUG_API", "householdServing: '" + householdServing + "'");
-                    Log.d("DEBUG_API", "servingSize: " + servingSize);
-                    Log.d("DEBUG_API", "servingSizeUnit: '" + servingSizeUnit + "'");
-
-                    if (householdServing != null && !householdServing.isEmpty() &&
-                            servingSize > 0 &&
-                            ("g".equalsIgnoreCase(servingSizeUnit) || "GRM".equalsIgnoreCase(servingSizeUnit))) {
-
-                        Log.d("DEBUG_API", "-> SUKCES: Tworzę miarę z 'servingSize'.");
-                        listaMiar.add(new FoodMeasure(householdServing, servingSize));
-                    } else {
-                        Log.d("DEBUG_API", "-> INFO: Brak miary 'servingSize'.");
-                    }
-
-                    Log.d("DEBUG_API", "--- Analiza 'packageWeight' (z Bundle) ---");
-                    Log.d("DEBUG_API", "packageWeight: '" + packageWeightStr + "'");
-                    double packageGrams = parsePackageWeightToGrams(packageWeightStr);
-
-                    if (packageGrams > 0) {
-                        Log.d("DEBUG_API", "-> SUKCES: Sparsowano 'packageWeight' na: " + packageGrams + "g");
-                        FoodMeasure packageMeasure = new FoodMeasure("1 opakowanie", packageGrams);
-
-                        boolean isDuplicate = false;
-                        for(FoodMeasure m : listaMiar) {
-                            if(m.getGramWeight() == packageGrams) { isDuplicate = true; break; }
-                        }
-                        if(!isDuplicate) {
-                            listaMiar.add(packageMeasure);
-                        } else {
-                            Log.d("DEBUG_API", "-> INFO: Miara 'packageWeight' jest duplikatem, pomijam.");
-                        }
-                    } else {
-                        Log.d("DEBUG_API", "-> INFO: Brak miary 'packageWeight'.");
-                    }
-
-                    Log.d("DEBUG_API", "Łącznie dodano miar do listy: " + listaMiar.size());
-                    updateSpinner();
-                    updateKcalDisplay(); // Pierwsze wywołanie do ustawienia kalorii
-
-                } else {
-                    Log.e("DEBUG_API", "Błąd API: Kod=" + response.code() + " | URL=" + call.request().url());
-                    tv_item_nazwa.setText("Nie udało się znaleźć produktu (Błąd: " + response.code() + ")");
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<FoodDetailsResponse> call, @NonNull Throwable t) {
-                Log.e("DEBUG_API", "Błąd KRYTYCZNY (onFailure): " + t.getMessage(), t);
-                tv_item_nazwa.setText("Błąd sieci: " + t.getMessage());
-            }
-        });
-    }
-
-    // --- Metody pomocnicze ---
 
     void initializeComponents(View view) {
         tv_pora_posilku_item = view.findViewById(R.id.tv_pora_posilku_item);
@@ -240,7 +222,6 @@ public class DziennikDodajItem extends Fragment {
         if (getContext() == null) return;
         List<String> unitNames = new ArrayList<>();
 
-        // ⭐ POPRAWKA: Zmiana "100 g" na "g"
         unitNames.add("g"); // Zawsze na pozycji 0
 
         for (FoodMeasure measure : listaMiar) {
@@ -270,7 +251,6 @@ public class DziennikDodajItem extends Fragment {
         int selectedPosition = sp_item_custom_miara.getSelectedItemPosition();
         double gramWeight;
 
-        // ⭐ POPRAWKA: Logika dla 'g' na pozycji 0
         if (selectedPosition == 0) {
             // Wybrano "g"
             gramWeight = 1.0;
@@ -303,7 +283,6 @@ public class DziennikDodajItem extends Fragment {
         int selectedPosition = sp_item_custom_miara.getSelectedItemPosition();
         double gramWeight;
 
-        // ⭐ POPRAWKA: Logika dla 'g' na pozycji 0
         if (selectedPosition == 0) {
             gramWeight = 1.0;
         } else if (selectedPosition > 0 && selectedPosition <= listaMiar.size()) {
@@ -316,8 +295,6 @@ public class DziennikDodajItem extends Fragment {
 
         double totalGrams = ilosc * gramWeight;
         double totalKcal = (totalGrams / 100.0) * caloriesPer100g;
-
-        // TODO: Tutaj umieść logikę zapisu do bazy danych
 
         Toast.makeText(getContext(), String.format(Locale.getDefault(), "Dodano %.1f g (%.0f kcal)", totalGrams, totalKcal), Toast.LENGTH_LONG).show();
         cofnij();
