@@ -23,6 +23,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import android.view.ViewTreeObserver;
 
 // Modele
 import com.example.pierwszawersjaapki.CaloriesJournal.CircularProgressBarView;
@@ -40,6 +41,9 @@ import com.google.android.flexbox.JustifyContent;
 
 public class DziennikFragment extends Fragment implements DishFragmentAdapter.OnCameraAddClickListener, DishFragmentAdapter.OnAddClickListener, DishFragmentAdapter.OnMealTimingClickListener {
 
+    // Zapis scrollu
+    private int lastScrollY = 0;
+
     // Zmienne ogolne
     private View rootView;
     private ImageButton btn_notifications;
@@ -54,6 +58,7 @@ public class DziennikFragment extends Fragment implements DishFragmentAdapter.On
     private LinearLayout ll_calories_summary;
 
     private DailyData currentDayData = new DailyData();
+    private Calendar selectedCalendar; // wybrana data przez uzytkownika
 
     // Zmienne Odżywianie
     private RecyclerView rv_meal_timings;
@@ -91,6 +96,7 @@ public class DziennikFragment extends Fragment implements DishFragmentAdapter.On
 
         // Pobranie dzisiejszej daty
         Calendar calendar = Calendar.getInstance();
+        selectedCalendar = (Calendar) calendar.clone();
         int todayDay = calendar.get(Calendar.DAY_OF_MONTH);
         int todayMonth = calendar.get(Calendar.MONTH);
         int todayYear = calendar.get(Calendar.YEAR);
@@ -102,6 +108,7 @@ public class DziennikFragment extends Fragment implements DishFragmentAdapter.On
         calendarButton.setOnClickListener(v -> {
             DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
                     (view1, year, month, dayOfMonth) -> {
+                        selectedCalendar.set(year,month,dayOfMonth);
                         // Aktualizacja kalendarza po wybraniu daty
                         updateWeekCalendar(dayOfMonth, month, year, weekDaysContainer, inflater);
                     },
@@ -120,6 +127,28 @@ public class DziennikFragment extends Fragment implements DishFragmentAdapter.On
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (lastScrollY != 0) {
+            rootView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    // Sprawdzamy, czy listener wciąż "żyje", aby uniknąć błędów
+                    if (rootView.getViewTreeObserver().isAlive()) {
+                        // Usuwamy listener, aby nie odpalił się wielokrotnie
+                        rootView.getViewTreeObserver().removeOnPreDrawListener(this);
+                    }
+
+                    // Ustawiamy pozycję scrolla
+                    rootView.scrollTo(0, lastScrollY);
+
+                    // Zerujemy zapisaną pozycję (opcjonalne, ale zalecane)
+                    lastScrollY = 0;
+
+                    // Zwracamy 'true', aby pozwolić na kontynuowanie procesu rysowania
+                    return true;
+                }
+            });
+        }
 
         // Sekcja Podsumowanie
         pb_calories_left = view.findViewById(R.id.pb_calories_left);
@@ -213,6 +242,15 @@ public class DziennikFragment extends Fragment implements DishFragmentAdapter.On
         rv_cups_of_water.setAdapter(waterFragmentAdapter);
     }
 
+    @Override
+    public void onDestroyView() {
+        if (rootView != null) {
+            // Zapisujemy aktualną pozycję przewinięcia
+            lastScrollY = rootView.getScrollY();
+        }
+        super.onDestroyView();
+    }
+
     // METODY KALENDARZA
     private void updateWeekCalendar(int day, int month, int year, LinearLayout weekDaysContainer, LayoutInflater inflater) {
         weekDaysContainer.removeAllViews();
@@ -236,6 +274,8 @@ public class DziennikFragment extends Fragment implements DishFragmentAdapter.On
             int dayNumberValue = calendar.get(Calendar.DAY_OF_MONTH);
             dayNumber.setText(String.valueOf(dayNumberValue));
 
+            final Calendar dayCalendar = (Calendar) calendar.clone();
+
             // Listener kliknięcia
             dayView.setOnClickListener(v -> {
                 if (selectedDayView != null) {
@@ -253,6 +293,7 @@ public class DziennikFragment extends Fragment implements DishFragmentAdapter.On
                 newNumber.setTextColor(Color.WHITE);
 
                 selectedDayView = v;
+                selectedCalendar = dayCalendar;
             });
 
             // Domyślnie zaznacz wybrany dzień
@@ -282,6 +323,12 @@ public class DziennikFragment extends Fragment implements DishFragmentAdapter.On
         DziennikDodaj fragment = new DziennikDodaj();
         Bundle args = new Bundle();
         args.putString("meal_name",dishItem.getNazwa());
+        // przekonwertowanie datatime na stringa
+        if (selectedCalendar != null) {
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd.MM.yyyy", java.util.Locale.getDefault());
+            String selectedDateString = sdf.format(selectedCalendar.getTime());
+            args.putString("selected_date", selectedDateString);
+        }
         fragment.setArguments(args);
 
         requireActivity().getSupportFragmentManager()

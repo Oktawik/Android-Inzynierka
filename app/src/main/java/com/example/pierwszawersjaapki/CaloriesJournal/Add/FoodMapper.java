@@ -1,63 +1,54 @@
-package com.example.pierwszawersjaapki.CaloriesJournal.Add;
+package com.example.pierwszawersjaapki.CaloriesJournal.Add; // Użyj swojego pakietu
 
 import com.example.pierwszawersjaapki.FDC_API.Food;
 import com.example.pierwszawersjaapki.FDC_API.FoodNutrient;
-
 import java.util.List;
 
-// Klasa do tłumaczenia obiektu Food z API
-// na obiekt ProduktItem do recyclerView
 public class FoodMapper {
     public static ProduktItem mapFoodToProduktItem(Food food) {
         if (food == null) {
             return null;
         }
-
         List<FoodNutrient> nutrients = food.getFoodNutrients();
 
-        // Wyciągamy wartości odżywcze dla 100g
         int kalorie = (int) findNutrientValue(nutrients, "Energy");
         int bialko = (int) findNutrientValue(nutrients, "Protein");
         int tluszcze = (int) findNutrientValue(nutrients, "Total lipid (fat)");
         int weglowodany = (int) findNutrientValue(nutrients, "Carbohydrate, by difference");
 
-//        // Pobieramy rozmiar porcji (i sprawdzamy czy jest w gramach)
-//        int porcja = 0;
-//        String unit = food.getServingSizeUnit();
-//        if (unit != null && (unit.equalsIgnoreCase("g") || unit.equalsIgnoreCase("GRM"))) {
-//            porcja = (int) food.getServingSize();
-//        }
-        int porcja = 100;
+        // ⭐ POBIERZ NOWE DANE Z OBIEKTU 'food'
+        String householdServing = food.getHouseholdServingFullText();
+        double servingSize = food.getServingSize();
+        String servingSizeUnit = food.getServingSizeUnit();
+        String packageWeight = food.getPackageWeight();
 
-        // Tworzymy i zwracamy Twój czysty obiekt ProduktItem
+        // ⭐ PRZEKAŻ DANE DO NOWEGO KONSTRUKTORA
         return new ProduktItem(
-                (int) food.getFdcId(), // id
-                food.getDescription(), // nazwa
+                food.getFdcId(), // Zmienione na long
+                food.getDescription(),
                 kalorie,
                 bialko,
                 weglowodany,
                 tluszcze,
-                porcja
+                householdServing, // Nowe
+                servingSize,      // Nowe
+                servingSizeUnit,  // Nowe
+                packageWeight     // Nowe
         );
     }
 
     private static double findNutrientValue(List<FoodNutrient> nutrients, String nutrientName) {
-        if (nutrients == null) {
-            return 0;
-        }
+        if (nutrients == null) return 0;
         for (FoodNutrient nutrient : nutrients) {
-            // Sprawdzamy nazwy makroskładników
             if (nutrient.getNutrientName() != null) {
                 if (nutrient.getNutrientName().equalsIgnoreCase(nutrientName)) {
                     return nutrient.getValue();
                 }
-                // API czasem zwraca "Energy" w "KCAL", a czasem w "kJ".
-                // Upewnijmy się, że bierzemy "KCAL"
-                if (nutrientName.equals("Energy") && nutrient.getNutrientName().equalsIgnoreCase("Energy") && nutrient.getUnitName().equalsIgnoreCase("KCAL")) {
+                if (nutrientName.equals("Energy") && nutrient.getNutrientName().equalsIgnoreCase("Energy") && "KCAL".equalsIgnoreCase(nutrient.getUnitName())) {
                     return nutrient.getValue();
                 }
             }
         }
-        return 0; // Nie znaleziono
+        return 0;
     }
 }

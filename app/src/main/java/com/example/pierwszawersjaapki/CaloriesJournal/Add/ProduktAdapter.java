@@ -40,8 +40,7 @@ public class ProduktAdapter extends RecyclerView.Adapter<ProduktViewHolder> {
         ProduktItem item = produktyLista.get(position);
 
         holder.tv_produkt_nazwa.setText(produktyLista.get(position).getNazwa());
-        holder.tv_produkt_porcja.setText(String.format(Locale.US, "%d g", item.getJedna_porcja()));
-        holder.tv_produkt_kalorie.setText(String.format(Locale.US, "%d kcal", item.getIlosc_kalorii()));
+        holder.tv_produkt_porcja.setText(String.format(Locale.US, "%d g", 100));        holder.tv_produkt_kalorie.setText(String.format(Locale.US, "%d kcal", item.getIlosc_kalorii()));
         holder.tv_bialko.setText(String.format(Locale.US, "%d g", item.getBialko()));
         holder.tv_weglowodany.setText(String.format(Locale.US, "%d g", item.getWeglowodany()));
         holder.tv_tluszcze.setText(String.format(Locale.US, "%d g", item.getTluszcze()));
