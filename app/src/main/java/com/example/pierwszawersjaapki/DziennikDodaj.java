@@ -1,6 +1,5 @@
 package com.example.pierwszawersjaapki;
 
-// Importy Androida
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -128,20 +127,17 @@ public class DziennikDodaj extends Fragment implements ProduktAdapter.onBtnProdu
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                return false; // Nie robimy nic przy zmianie tekstu
+                return false;
             }
         });
 
         return view;
     }
 
-    /**
-     * Metoda wyszukująca produkty w API FDC
-     */
+
     private void searchProducts(String query) {
         FoodDataService service = RetrofitClient.getClient().create(FoodDataService.class);
 
-        // Wywołanie API
         Call<FoodSearchResponse> call = service.searchFoods(api_key, query, 150);
 
         tv_dziennik_dodaj.setVisibility(View.VISIBLE);
@@ -158,7 +154,6 @@ public class DziennikDodaj extends Fragment implements ProduktAdapter.onBtnProdu
                     if (foods != null && !foods.isEmpty()) {
                         lista_produktow.clear();
 
-                        // Mapowanie Food -> ProduktItem
                         for (Food food : foods) {
                             ProduktItem produkt = FoodMapper.mapFoodToProduktItem(food);
                             if (produkt != null) {
@@ -186,30 +181,14 @@ public class DziennikDodaj extends Fragment implements ProduktAdapter.onBtnProdu
         });
     }
 
-    /**
-     * Wywoływane po kliknięciu na element listy (interfejs z ProduktAdapter)
-     */
     @Override
     public void onProduktClicked(ProduktItem produkt) {
         DziennikDodajItem fragmentSzczegolow = new DziennikDodajItem();
-
-        Log.d("DEBUG_API", "Kliknięto produkt. Przekazuję fdcId: " + produkt.getId());
-
         Bundle args = new Bundle();
 
-        // --- PRZEKAZYWANIE DANYCH ---
-        args.putLong("fdcId", produkt.getId());
         args.putString("mealName", mealName);
         args.putString("selectedDate", selectedDate);
-
-        // ⭐ PRZEKAŻ NOWE DANE O PORCJACH
-        args.putString("householdServing", produkt.getHouseholdServing());
-        args.putDouble("servingSize", produkt.getServingSize());
-        args.putString("servingSizeUnit", produkt.getServingSizeUnit());
-        args.putString("packageWeight", produkt.getPackageWeight());
-
-        args.putInt("calories", produkt.getIlosc_kalorii());
-        // --- KONIEC PRZEKAZYWANIA DANYCH ---
+        args.putSerializable("produkt", produkt);
 
         fragmentSzczegolow.setArguments(args);
 
@@ -222,27 +201,17 @@ public class DziennikDodaj extends Fragment implements ProduktAdapter.onBtnProdu
         }
     }
 
-    /**
-     * Wywoływane po kliknięciu przycisku "dodaj" na liście (interfejs z ProduktAdapter)
-     */
     @Override
     public void onProduktAdded(ProduktItem produkt) {
         Toast.makeText(getContext(), "Dodano produkt " + produkt.getNazwa(), Toast.LENGTH_SHORT).show();
-        // TODO: Tutaj logika szybkiego dodawania
     }
 
-    /**
-     * Metoda do obsługi przycisku "Wstecz"
-     */
     private void cofnij() {
         if (getActivity() != null) {
             getActivity().getSupportFragmentManager().popBackStack();
         }
     }
 
-    /**
-     * Metoda zamieniająca datę na "Dzisiaj", "Wczoraj" itp.
-     */
     private String sprawdzDate(String data) {
         if (data == null) {
             return "";
